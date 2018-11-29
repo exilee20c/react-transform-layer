@@ -1,0 +1,63 @@
+div.exl-transform {
+  position: absolute;
+}
+
+div.exl-transform > div.exl-transform-anchors {
+  /* position: absolute; */
+}
+
+div.exl-transform > div.exl-transform-anchors > div.exl-transform-anchor {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  padding: 4px;
+  box-sizing: border-box;
+  color: inherit;
+}
+
+div.exl-transform > div.exl-transform-anchors > div.exl-transform-anchor:before {
+  content:'';
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.4);
+  box-sizing: border-box;
+  border-radius: 50%;
+  border-width: 1px;
+  border-style: solid;
+  transition: border-width 0.3s ease;
+}
+
+div.exl-transform > div.exl-transform-anchors > div.exl-transform-anchor.fill:before {
+  border-width: 4px;
+}
+
+div.exl-transform > div.exl-transform-anchors > div.exl-transform-anchor.top {
+  top: -8px;
+}
+
+div.exl-transform
+  > div.exl-transform-anchors
+  > div.exl-transform-anchor.middle {
+  top: calc(50% - 8px);
+}
+
+div.exl-transform
+  > div.exl-transform-anchors
+  > div.exl-transform-anchor.bottom {
+  bottom: -8px;
+}
+
+div.exl-transform > div.exl-transform-anchors > div.exl-transform-anchor.left {
+  left: -8px;
+}
+
+div.exl-transform
+  > div.exl-transform-anchors
+  > div.exl-transform-anchor.center {
+  left: calc(50% - 8px);
+}
+
+div.exl-transform > div.exl-transform-anchors > div.exl-transform-anchor.right {
+  right: -8px;
+}
