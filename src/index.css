@@ -3,7 +3,7 @@ div.exl-transform {
 }
 
 div.exl-transform > div.exl-transform-anchors {
-  /* position: absolute; */
+  user-select: none;
 }
 
 div.exl-transform > div.exl-transform-anchors > div.exl-transform-anchor {
