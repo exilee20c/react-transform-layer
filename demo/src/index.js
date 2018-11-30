@@ -7,32 +7,40 @@ class Demo extends Component {
   state = {
     w: 100,
     h: 100,
-    x: 10,
-    y: 10,
+    x: 50,
+    y: 50,
+    z: 1000,
     e: true
   };
 
+  position = ({w, h, x, y}) => this.setState({
+    w,
+    h,
+    x,
+    y
+  });
+
   render() {
     const { state } = this;
-    const { w, h, x, y, e } = state;
+    const { w, h, x, y, z, e } = state;
 
     return (
       <div>
-        <Example w={w} h={h} x={x} y={y} z={100} d={true} c="#ff0000" e={e}>
+        <Example w={100} h={100} x={10} y={10} z={10} draggable={false} color="#ff0000">
           <div
-            style={{ width: "100%", height: "100%", backgroundColor: "teal" }}
+            style={{ width: "100%", height: "100%", backgroundColor: "#666666" }}
           />
         </Example>
 
-        <Example w={30} h={30} x={40} y={40} z={0} d={false}>
+        <Example w={100} h={100} x={30} y={30} z={100} draggable={false} color="#ff0000">
           <div
-            style={{ width: "100%", height: "100%", backgroundColor: "blue" }}
+            style={{ width: "100%", height: "100%", backgroundColor: "#999999" }}
           />
         </Example>
 
-        <Example w={50} h={50} x={90} y={90} z={1000} d={false}>
+        <Example w={w} h={h} x={x} y={y} z={z} draggable={e} onFinish={this.position} color="#ff0000">
           <div
-            style={{ width: "100%", height: "100%", backgroundColor: "black" }}
+            style={{ width: "100%", height: "100%", backgroundColor: "#cccccc" }}
           />
         </Example>
       </div>
