@@ -38,7 +38,7 @@ class Demo extends Component {
           />
         </Example>
 
-        <Example w={w} h={h} x={x} y={y} z={z} draggable={e} onFinish={this.position} color="#ff0000">
+        <Example w={w} h={h} x={x} y={y} z={z} draggable={e} onFinish={this.position} color="red">
           <div
             style={{ width: "100%", height: "100%", backgroundColor: "#cccccc" }}
           />

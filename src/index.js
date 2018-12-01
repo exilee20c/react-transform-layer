@@ -21,6 +21,10 @@ class Positioner extends Component {
       b_l: false,
       b_c: false,
       b_r: false
+    },
+    factor_map: {
+      Control: false,
+      Shift: false
     }
   };
 
@@ -95,34 +99,56 @@ class Positioner extends Component {
     }
   };
 
+  setMoveFactor = ({ key }) =>
+    (key === "Control" || key === "Shift") &&
+    this.setState(({ factor_map }) => ({
+      factor_map: { ...factor_map, [key]: true }
+    }));
+
+  unsetMoveFactor = ({ key }) =>
+    (key === "Control" || key === "Shift") &&
+    this.setState(({ factor_map }) => ({
+      factor_map: { ...factor_map, [key]: false }
+    }));
+
   getRect = () => {
     const { props, state } = this;
 
     const { w, h, x, y } = props;
-    const { delta_map, press_map } = state;
+    const { delta_map, press_map, factor_map } = state;
 
     const { x: d_x, y: d_y } = delta_map;
     const { t_l, t_c, t_r, m_l, m_c, m_r, b_l, b_c, b_r } = press_map;
+    const { Control, Shift } = factor_map;
 
     const d_w_s = t_r || m_r || b_r ? 1 : t_l || m_l || b_l ? -1 : 0;
     const d_h_s = b_l || b_c || b_r ? 1 : t_l || t_c || t_r ? -1 : 0;
     const d_x_s = m_c || t_l || m_l || b_l ? 1 : 0;
     const d_y_s = m_c || t_l || t_c || t_r ? 1 : 0;
 
+    const c_d_w_s = t_r || m_r || b_r ? 1 : t_l || m_l || b_l ? -1 : 0;
+    const c_d_h_s = b_l || b_c || b_r ? 1 : t_l || t_c || t_r ? -1 : 0;
+    const c_d_x_s = t_r || m_r || b_r ? -1 : 0;
+    const c_d_y_s = b_l || b_c || b_r ? -1 : 0;
+
     return {
-      w: w + d_w_s * d_x,
-      h: h + d_h_s * d_y,
-      x: x + d_x_s * d_x,
-      y: y + d_y_s * d_y
+      w: w + ((Control ? c_d_w_s : 0) + d_w_s) * d_x,
+      h: h + ((Control ? c_d_h_s : 0) + d_h_s) * d_y,
+      x: x + ((Control ? c_d_x_s : 0) + d_x_s) * d_x,
+      y: y + ((Control ? c_d_y_s : 0) + d_y_s) * d_y
     };
   };
 
   componentDidMount() {
     window.addEventListener("mousemove", this.moveAnchor);
+    window.addEventListener("keydown", this.setMoveFactor);
+    window.addEventListener("keyup", this.unsetMoveFactor);
   }
 
   componentWillUnmount() {
     window.removeEventListener("mousemove", this.moveAnchor);
+    window.removeEventListener("keydown", this.setMoveFactor);
+    window.removeEventListener("keyup", this.unsetMoveFactor);
   }
 
   render() {

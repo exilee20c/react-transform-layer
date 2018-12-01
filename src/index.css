@@ -6,6 +6,10 @@ div.exl-transform > div.exl-transform-anchors {
   user-select: none;
 }
 
+div.exl-transform > div.exl-transform-anchors * {
+  user-select: none;
+}
+
 div.exl-transform > div.exl-transform-anchors > div.exl-transform-anchor {
   position: absolute;
   width: 16px;
