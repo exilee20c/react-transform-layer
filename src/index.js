@@ -56,16 +56,44 @@ class Positioner extends Component {
 
   moveAnchor = ({ clientX: cx, clientY: cy, buttons }) => {
     const { press_map, origin_map } = this.state;
-    const { onFinish } = this.props;
+    const { onFinish, w, h, mw, mh } = this.props;
     const { t_l, t_c, t_r, m_l, m_c, m_r, b_l, b_c, b_r } = press_map;
     const { x, y } = origin_map;
     const pressed = t_l || t_c || t_r || m_l || m_c || m_r || b_l || b_c || b_r;
+    const plus_w = t_r || m_r || b_r;
+    const minus_w = t_l || m_l || b_l;
+    const plus_h = b_l || b_c || b_r;
+    const minus_h = t_l || t_c || t_r;
 
     if (buttons) {
       if (pressed) {
-        this.setState(({ delta_map }) => ({
-          delta_map: { ...delta_map, x: cx - x, y: cy - y }
-        }));
+        this.setState(({ delta_map }) => {
+          let p_w_s = 0;
+          let p_h_s = 0;
+          let m_w_s = 0;
+          let m_h_s = 0;
+
+          if (plus_w && w + cx - x < mw) {
+            p_w_s = mw - w - cx + x;
+          }
+          if (plus_h && h + cy - y < mh) {
+            p_h_s = mh - h - cy + y;
+          }
+          if (minus_w && w - cx + x < mw) {
+            m_w_s = w - mw - cx + x;
+          }
+          if (minus_h && h - cy + y < mh) {
+            m_h_s = h - mh - cy + y;
+          }
+
+          return {
+            delta_map: {
+              ...delta_map,
+              x: cx - x + p_w_s + m_w_s,
+              y: cy - y + p_h_s + m_h_s
+            }
+          };
+        });
       }
     } else {
       if (pressed) {
@@ -119,7 +147,7 @@ class Positioner extends Component {
 
     const { x: d_x, y: d_y } = delta_map;
     const { t_l, t_c, t_r, m_l, m_c, m_r, b_l, b_c, b_r } = press_map;
-    const { Control, Shift } = factor_map;
+    const { Control } = factor_map;
 
     const d_w_s = t_r || m_r || b_r ? 1 : t_l || m_l || b_l ? -1 : 0;
     const d_h_s = b_l || b_c || b_r ? 1 : t_l || t_c || t_r ? -1 : 0;
