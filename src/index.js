@@ -3,14 +3,28 @@ import "./index.css";
 
 class Positioner extends Component {
   state = {
+    // 현재 active anchor의 origin coordinates로부터 현재 mousemove로 얻어진 delta 값
     delta_map: {
       x: 0,
       y: 0
     },
+
+    // 현재 active anchor가 mousedown된 x, y 좌표
     origin_map: {
       x: 0,
       y: 0
     },
+
+    /**
+     * active 상태의 anchor를 true, false의 boolean으로 표현
+     * t_x : 상단 (top)
+     * m_x : 중단 (middle)
+     * b_x : 하단 (bottom)
+     *
+     * y_l : 좌단 (left)
+     * y_c : 중단 (center)
+     * y_r : 우단 (right)
+     */
     press_map: {
       t_l: false,
       t_c: false,
@@ -22,18 +36,25 @@ class Positioner extends Component {
       b_c: false,
       b_r: false
     },
+
+    /**
+     * ctrl: 중심축으로
+     * shift: 종횡비 유지
+     */
     factor_map: {
       Control: false,
       Shift: false
     }
   };
 
+  // mousedown된 anchor에 대해서 press_map true 시키기
   makeActivor = anc => ({ clientX, clientY }) =>
     this.setState(({ press_map, origin_map }) => ({
       press_map: { ...press_map, [anc]: true },
       origin_map: { ...origin_map, x: clientX, y: clientY }
     }));
 
+  // mouseup된 anchor에 대해서 press_map false 시키기
   makeDeactivor = anc => () => {
     const { onFinish } = this.props;
     const { w, h, x, y } = this.getRect();
@@ -54,11 +75,13 @@ class Positioner extends Component {
     );
   };
 
+  // mousemove 액션이 set_delta_map 및 !buttons에 대해서 release 처리
   moveAnchor = ({ clientX: cx, clientY: cy, buttons }) => {
-    const { press_map, origin_map } = this.state;
+    const { press_map, origin_map, factor_map } = this.state;
     const { onFinish, w, h, mw, mh } = this.props;
     const { t_l, t_c, t_r, m_l, m_c, m_r, b_l, b_c, b_r } = press_map;
     const { x, y } = origin_map;
+    const { Control } = factor_map;
     const pressed = t_l || t_c || t_r || m_l || m_c || m_r || b_l || b_c || b_r;
     const plus_w = t_r || m_r || b_r;
     const minus_w = t_l || m_l || b_l;
@@ -73,17 +96,32 @@ class Positioner extends Component {
           let m_w_s = 0;
           let m_h_s = 0;
 
-          if (plus_w && w + cx - x < mw) {
-            p_w_s = mw - w - cx + x;
-          }
-          if (plus_h && h + cy - y < mh) {
-            p_h_s = mh - h - cy + y;
-          }
-          if (minus_w && w - cx + x < mw) {
-            m_w_s = w - mw - cx + x;
-          }
-          if (minus_h && h - cy + y < mh) {
-            m_h_s = h - mh - cy + y;
+          if (Control) {
+            if (plus_w && w + (cx - x) * 2 < mw) {
+              p_w_s = mw - w - (cx - x) * 2;
+            }
+            if (plus_h && h + (cy - y) * 2 < mh) {
+              p_h_s = mh - h - (cy - y) * 2;
+            }
+            if (minus_w && w - (cx - x) * 2 < mw) {
+              m_w_s = w - mw - (cx - x) * 2;
+            }
+            if (minus_h && h - (cy - y) * 2 < mh) {
+              m_h_s = h - mh - (cy - y) * 2;
+            }
+          } else {
+            if (plus_w && w + cx - x < mw) {
+              p_w_s = mw - w - cx + x;
+            }
+            if (plus_h && h + cy - y < mh) {
+              p_h_s = mh - h - cy + y;
+            }
+            if (minus_w && w - cx + x < mw) {
+              m_w_s = w - mw - cx + x;
+            }
+            if (minus_h && h - cy + y < mh) {
+              m_h_s = h - mh - cy + y;
+            }
           }
 
           return {
@@ -127,18 +165,21 @@ class Positioner extends Component {
     }
   };
 
+  // ctrl, shift key action
   setMoveFactor = ({ key }) =>
     (key === "Control" || key === "Shift") &&
     this.setState(({ factor_map }) => ({
       factor_map: { ...factor_map, [key]: true }
     }));
 
+  // ctrl, shift key action
   unsetMoveFactor = ({ key }) =>
     (key === "Control" || key === "Shift") &&
     this.setState(({ factor_map }) => ({
       factor_map: { ...factor_map, [key]: false }
     }));
 
+  // 델타 반영 현재 rect 표시 (w, h, x, y), render, publish to parent에서 호출
   getRect = () => {
     const { props, state } = this;
 
