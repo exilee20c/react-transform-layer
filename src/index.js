@@ -95,19 +95,23 @@ class Positioner extends Component {
           let p_h_s = 0;
           let m_w_s = 0;
           let m_h_s = 0;
+          let c_p_w_s = 0;
+          let c_p_h_s = 0;
+          let c_m_w_s = 0;
+          let c_m_h_s = 0;
 
           if (Control) {
             if (plus_w && w + (cx - x) * 2 < mw) {
-              p_w_s = mw - w - (cx - x) * 2;
+              c_p_w_s = mw / 2 - w / 2 - (cx - x);
             }
             if (plus_h && h + (cy - y) * 2 < mh) {
-              p_h_s = mh - h - (cy - y) * 2;
+              c_p_h_s = mh / 2 - h / 2 - (cy - y);
             }
             if (minus_w && w - (cx - x) * 2 < mw) {
-              m_w_s = w - mw - (cx - x) * 2;
+              c_m_w_s = w / 2 - mw / 2 - (cx - x);
             }
             if (minus_h && h - (cy - y) * 2 < mh) {
-              m_h_s = h - mh - (cy - y) * 2;
+              c_m_h_s = h / 2 - mh / 2 - (cy - y);
             }
           } else {
             if (plus_w && w + cx - x < mw) {
@@ -127,8 +131,8 @@ class Positioner extends Component {
           return {
             delta_map: {
               ...delta_map,
-              x: cx - x + p_w_s + m_w_s,
-              y: cy - y + p_h_s + m_h_s
+              x: cx - x + p_w_s + c_p_w_s + m_w_s + c_m_w_s,
+              y: cy - y + p_h_s + c_p_h_s + m_h_s + c_m_h_s
             }
           };
         });
@@ -166,18 +170,99 @@ class Positioner extends Component {
   };
 
   // ctrl, shift key action
-  setMoveFactor = ({ key }) =>
-    (key === "Control" || key === "Shift") &&
-    this.setState(({ factor_map }) => ({
-      factor_map: { ...factor_map, [key]: true }
-    }));
+  setMoveFactor = ({ key }) => {
+    const { factor_map, press_map } = this.state;
+    const { w, h, mw, mh } = this.props;
+    const { Control } = factor_map;
+    const { t_l, t_c, t_r, m_l, m_c, m_r, b_l, b_c, b_r } = press_map;
+    const plus_w = t_r || m_r || b_r;
+    const minus_w = t_l || m_l || b_l;
+    const plus_h = b_l || b_c || b_r;
+    const minus_h = t_l || t_c || t_r;
+
+    if (key === "Escape") {
+      this.setState({
+        press_map: {
+          t_l: false,
+          t_c: false,
+          t_r: false,
+          m_l: false,
+          m_c: false,
+          m_r: false,
+          b_l: false,
+          b_c: false,
+          b_r: false
+        },
+        origin_map: {
+          x: 0,
+          y: 0
+        },
+        delta_map: {
+          x: 0,
+          y: 0
+        }
+      });
+    }
+
+    if (!Control && key === "Control") {
+      this.setState(({ factor_map, delta_map: d }) => {
+        if (plus_w && w + d.x * 2 < mw) {
+          d.x /= 2;
+        }
+
+        if (minus_w && w - d.x * 2 < mw) {
+          d.x /= 2;
+        }
+
+        if (plus_h && h + d.y * 2 < mh) {
+          d.y /= 2;
+        }
+
+        if (minus_h && h - d.y * 2 < mh) {
+          d.y /= 2;
+        }
+
+        return {
+          factor_map: { ...factor_map, [key]: true },
+          delta_map: d
+        };
+      });
+    }
+  };
 
   // ctrl, shift key action
-  unsetMoveFactor = ({ key }) =>
-    (key === "Control" || key === "Shift") &&
-    this.setState(({ factor_map }) => ({
-      factor_map: { ...factor_map, [key]: false }
-    }));
+  unsetMoveFactor = ({ key }) => {
+    const { factor_map, press_map } = this.state;
+    const { w, h, mw, mh } = this.props;
+    const { Control } = factor_map;
+    const { t_l, t_c, t_r, m_l, m_c, m_r, b_l, b_c, b_r } = press_map;
+    const plus_w = t_r || m_r || b_r;
+    const minus_w = t_l || m_l || b_l;
+    const plus_h = b_l || b_c || b_r;
+    const minus_h = t_l || t_c || t_r;
+
+    if (Control && key === "Control") {
+      this.setState(({ factor_map, delta_map: d }) => {
+        if (plus_w && w + d.x * 2 === mw) {
+          d.x *= 2;
+        }
+        if (plus_h && h + d.y * 2 === mh) {
+          d.y *= 2;
+        }
+        if (minus_w && w - d.x * 2 === mw) {
+          d.x *= 2;
+        }
+        if (minus_h && h - d.y * 2 === mh) {
+          d.y *= 2;
+        }
+
+        return {
+          factor_map: { ...factor_map, [key]: false },
+          delta_map: d
+        };
+      });
+    }
+  };
 
   // 델타 반영 현재 rect 표시 (w, h, x, y), render, publish to parent에서 호출
   getRect = () => {
