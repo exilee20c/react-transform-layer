@@ -1,7 +1,7 @@
 {
   "name": "react-transform-layer",
   "version": "1.0.2",
-  "description": "react-transform-layer React component",
+  "description": "use with react, it works like free transform layer of photoshop-like...",
   "main": "lib/index.js",
   "module": "es/index.js",
   "files": [
@@ -28,11 +28,13 @@
     "react": "^16.6.3",
     "react-dom": "^16.6.3"
   },
-  "author": "",
-  "homepage": "",
+  "author": "exilee20c",
+  "homepage": "https://github.com/exilee20c/react-transform-layer",
   "license": "MIT",
-  "repository": "",
+  "repository": "https://github.com/exilee20c/react-transform-layer",
   "keywords": [
-    "react-component"
+    "react",
+    "transform",
+    "layer"
   ]
 }
