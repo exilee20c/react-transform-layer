@@ -3,7 +3,7 @@
 
 [![Travis][build-badge]][build]
 [![npm package][npm-badge]][npm]
-[![Coveralls][coveralls-badge]][coveralls]
+[![Coverage Status](https://coveralls.io/repos/github/exilee20c/react-transform-layer/badge.svg?branch=master)](https://coveralls.io/github/exilee20c/react-transform-layer?branch=master)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fexilee20c%2Freact-transform-layer.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fexilee20c%2Freact-transform-layer?ref=badge_shield)
 
 use with react, it works like free transform layer of photoshop-like...
@@ -72,9 +72,6 @@ render(<TheContainer />, document.querySelector("#root"));
 
 [npm-badge]: https://img.shields.io/npm/v/react-transform-layer.png?style=flat-square
 [npm]: https://www.npmjs.com/package/react-transform-layer
-
-[coveralls-badge]: https://img.shields.io/coveralls/exilee20c/react-transform-layer/master.png?style=flat-square
-[coveralls]: https://coveralls.io/github/exilee20c/react-transform-layer
 
 ## License
 

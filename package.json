@@ -1,6 +1,6 @@
 {
   "name": "react-transform-layer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "react-transform-layer React component",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -19,14 +19,7 @@
     "test:coverage": "nwb test-react --coverage",
     "test:watch": "nwb test-react --server"
   },
-  "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.8",
-    "@fortawesome/free-regular-svg-icons": "^5.5.0",
-    "@fortawesome/free-solid-svg-icons": "^5.5.0",
-    "@fortawesome/react-fontawesome": "^0.1.3",
-    "i": "^0.3.6",
-    "npm": "^6.4.1"
-  },
+  "dependencies": {},
   "peerDependencies": {
     "react": "16.x"
   },
